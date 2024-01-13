@@ -4,6 +4,7 @@
 /.vscode
 /data
 /my_data
+/vectorstores
 /img
 *.pth
 *.pyc

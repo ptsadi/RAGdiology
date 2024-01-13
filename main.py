@@ -1,9 +1,11 @@
-import argparse
-import time
-
-import pandas as pd
 import chromadb
 import yaml
+
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+import boto3
 
 import torch
 import torch.nn.functional as F
@@ -29,6 +31,7 @@ import os
 
 
 import streamlit as st
+
 
 def load_model():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -80,14 +83,56 @@ def preprocess_image(model, image_path):
     return image_embedding_list
 
 
+def download_vector_db():
+    s3_client = boto3.resource(
+        's3',
+        aws_access_key_id=st.secrets.aws_access_key_id,
+        aws_secret_access_key=st.secrets.aws_secret_access_key
+    )
+    s3_folder = "testRagd"
+    local_dir = "vectorstores"
+    bucket = s3_client.Bucket(st.secrets.aws_bucket_name)
+    for obj in bucket.objects.filter(Prefix=s3_folder):
+        target = obj.key if local_dir is None \
+            else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
+        if not os.path.exists(os.path.dirname(target)):
+            os.makedirs(os.path.dirname(target))
+        if obj.key[-1] == '/':
+            continue
+        # Check if file already exists
+        if not os.path.exists(target):
+            print(f"Downloading {obj.key}")
+            bucket.download_file(obj.key, target)
+        else:
+            print(f"File {target} already exists, skipping download.")
+
+    # s3_object = s3_client.get_object(Bucket=st.secrets.aws_bucket_name, Key="testRagd/chroma.sqlite3")
+    # body = s3_object["Body"]
+    #
+    # # Ensure the local directory exists
+    # local_directory = "vectorstores"
+    # if not os.path.exists(local_directory):
+    #     os.makedirs(local_directory)
+    #
+    # # Define the local file path
+    # local_file_path = os.path.join(local_directory, "testRagd")
+    #
+    # # Write the data to a local file
+    # with open(local_file_path, 'wb') as file:
+    #     file.write(body.read())
+    #
+    # # Confirm download
+    # print(f"File downloaded to {local_file_path}")
+
+
 def retreive_vector_db(image_embedding_list):
-    chroma_client = chromadb.PersistentClient(path=r"C:\Users\putua\Documents\_other_code\RAGdiology\my_data")
+    chroma_client = chromadb.PersistentClient(path="vectorstores")
     collection = chroma_client.get_collection(name="my_collection")
 
     # Query the collection with the correct embedding
     query_results = collection.query(
         query_embeddings=image_embedding_list,
-        n_results=1,
+        n_results=10,
         include=['documents', 'distances', 'metadatas', 'data', 'uris'],
     )
     return query_results
@@ -101,13 +146,14 @@ def generate_reports(context):
             • The impression should not mention anything about follow-up actions.
             • Impression should not contain any mentions of prior or previous studies.
             • Limit the generation to maxlen words.
+            • Use bullet points and never repeat findings
             • Do it in Indonesian Language (do not translate medical term or latin)
             Context: {context} 
 
             Impression summary:
             """
     prompt = ChatPromptTemplate.from_template(template)
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0,
+    llm = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0,
                      openai_api_key=st.secrets["openai_api_key"])
 
     rag_chain = (
@@ -123,6 +169,8 @@ def generate_reports(context):
 
 
 def main():
+    download_vector_db()
+
     uploaded_file = st.file_uploader("", type=['jpg', 'png', 'jpeg'])
     if uploaded_file:
         uploaded_img = Image.open(uploaded_file)
