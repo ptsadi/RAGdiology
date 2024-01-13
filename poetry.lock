@@ -87,6 +87,7 @@ files = [
 
 [package.dependencies]
 aiosignal = ">=1.1.2"
+async-timeout = {version = ">=4.0,<5.0", markers = "python_version < \"3.11\""}
 attrs = ">=17.3.0"
 frozenlist = ">=1.1.1"
 multidict = ">=4.5,<7.0"
@@ -127,6 +128,7 @@ numpy = "*"
 packaging = "*"
 pandas = ">=0.25"
 toolz = "*"
+typing-extensions = {version = ">=4.0.1", markers = "python_version < \"3.11\""}
 
 [package.extras]
 dev = ["anywidget", "geopandas", "hatch", "ipython", "m2r", "mypy", "pandas-stubs", "pyarrow (>=11)", "pytest", "pytest-cov", "ruff (>=0.1.3)", "types-jsonschema", "types-setuptools", "vega-datasets", "vegafusion[embed] (>=1.4.0)", "vl-convert-python (>=1.1.0)"]
@@ -155,8 +157,10 @@ files = [
 ]
 
 [package.dependencies]
+exceptiongroup = {version = ">=1.0.2", markers = "python_version < \"3.11\""}
 idna = ">=2.8"
 sniffio = ">=1.1"
+typing-extensions = {version = ">=4.1", markers = "python_version < \"3.11\""}
 
 [package.extras]
 doc = ["Sphinx (>=7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
@@ -174,8 +178,22 @@ files = [
     {file = "asgiref-3.7.2.tar.gz", hash = "sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed"},
 ]
 
+[package.dependencies]
+typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
+
 [package.extras]
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
+
+[[package]]
+name = "async-timeout"
+version = "4.0.3"
+description = "Timeout context manager for asyncio programs"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
+    {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
+]
 
 [[package]]
 name = "attrs"
@@ -289,8 +307,10 @@ files = [
 
 [package.dependencies]
 colorama = {version = "*", markers = "os_name == \"nt\""}
+importlib-metadata = {version = ">=4.6", markers = "python_version < \"3.10\""}
 packaging = ">=19.0"
 pyproject_hooks = "*"
+tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
 docs = ["furo (>=2023.08.17)", "sphinx (>=7.0,<8.0)", "sphinx-argparse-cli (>=1.5)", "sphinx-autodoc-typehints (>=1.10)", "sphinx-issues (>=3.0.0)"]
@@ -605,6 +625,20 @@ files = [
 
 [package.extras]
 dev = ["coverage", "coveralls", "pytest"]
+
+[[package]]
+name = "exceptiongroup"
+version = "1.2.0"
+description = "Backport of PEP 654 (exception groups)"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "exceptiongroup-1.2.0-py3-none-any.whl", hash = "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14"},
+    {file = "exceptiongroup-1.2.0.tar.gz", hash = "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"},
+]
+
+[package.extras]
+test = ["pytest (>=6)"]
 
 [[package]]
 name = "fastapi"
@@ -1220,6 +1254,9 @@ files = [
     {file = "importlib_resources-6.1.1.tar.gz", hash = "sha256:3893a00122eafde6894c59914446a512f728a0c1a45f9bb9b63721b6bacf0b4a"},
 ]
 
+[package.dependencies]
+zipp = {version = ">=3.1.0", markers = "python_version < \"3.10\""}
+
 [package.extras]
 docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (<7.2.5)", "sphinx (>=3.5)", "sphinx-lint"]
 testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff", "zipp (>=3.17)"]
@@ -1362,6 +1399,7 @@ files = [
 
 [package.dependencies]
 aiohttp = ">=3.8.3,<4.0.0"
+async-timeout = {version = ">=4.0.0,<5.0.0", markers = "python_version < \"3.11\""}
 dataclasses-json = ">=0.5.7,<0.7"
 jsonpatch = ">=1.33,<2.0"
 langchain-community = ">=0.0.9,<0.1"
@@ -2447,7 +2485,10 @@ files = [
 ]
 
 [package.dependencies]
-numpy = {version = ">=1.23.2,<2", markers = "python_version == \"3.11\""}
+numpy = [
+    {version = ">=1.22.4,<2", markers = "python_version < \"3.11\""},
+    {version = ">=1.23.2,<2", markers = "python_version == \"3.11\""},
+]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
 tzdata = ">=2022.1"
@@ -2928,6 +2969,9 @@ files = [
     {file = "pyproject_hooks-1.0.0-py3-none-any.whl", hash = "sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8"},
     {file = "pyproject_hooks-1.0.0.tar.gz", hash = "sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5"},
 ]
+
+[package.dependencies]
+tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "pyreadline3"
@@ -3740,6 +3784,7 @@ files = [
 
 [package.dependencies]
 anyio = ">=3.4.0,<5"
+typing-extensions = {version = ">=3.10.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
@@ -4019,6 +4064,17 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+
+[[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 
 [[package]]
@@ -4482,6 +4538,7 @@ h11 = ">=0.8"
 httptools = {version = ">=0.5.0", optional = true, markers = "extra == \"standard\""}
 python-dotenv = {version = ">=0.13", optional = true, markers = "extra == \"standard\""}
 pyyaml = {version = ">=5.1", optional = true, markers = "extra == \"standard\""}
+typing-extensions = {version = ">=4.0", markers = "python_version < \"3.11\""}
 uvloop = {version = ">=0.14.0,<0.15.0 || >0.15.0,<0.15.1 || >0.15.1", optional = true, markers = "(sys_platform != \"win32\" and sys_platform != \"cygwin\") and platform_python_implementation != \"PyPy\" and extra == \"standard\""}
 watchfiles = {version = ">=0.13", optional = true, markers = "extra == \"standard\""}
 websockets = {version = ">=10.4", optional = true, markers = "extra == \"standard\""}
@@ -4977,5 +5034,5 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.11,<3.12"
-content-hash = "c9bca734093f1386b116141192f901af45b649e37092f1756f51b48e2d89b275"
+python-versions = ">=3.9.0,<3.9.7 || >3.9.7,<3.12"
+content-hash = "48532cf465434a1d7bf3b20396388c3b1057d35bd8d6dcc899a4febc6ca7df78"

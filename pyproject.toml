@@ -6,7 +6,7 @@ authors = ["putu-adi-hyrd <putu.adi@hyrd.de>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
+python = ">=3.9.0,<3.9.7 || >3.9.7,<3.12"
 pandas = "^2.1.4"
 pyyaml = "^6.0.1"
 tqdm = "^4.66.1"
