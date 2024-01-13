@@ -108,7 +108,7 @@ def generate_reports(context):
             """
     prompt = ChatPromptTemplate.from_template(template)
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0,
-                     openai_api_key="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")
+                     openai_api_key=st.secrets["openai_api_key"])
 
     rag_chain = (
             {"context": RunnablePassthrough()}
@@ -118,6 +118,7 @@ def generate_reports(context):
     )
 
     result = rag_chain.invoke(context)
+    print(result)
     return result
 
 

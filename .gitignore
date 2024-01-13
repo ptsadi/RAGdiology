@@ -3,8 +3,9 @@
 /.venv
 /.vscode
 /data
-/img
 /my_data
+/img
 *.pth
 *.pyc
 CXR_*
+/.streamlit
