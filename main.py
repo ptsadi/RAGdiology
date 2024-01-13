@@ -20,8 +20,6 @@ from langchain.schema.output_parser import StrOutputParser
 
 from PIL import Image
 
-from CXR_ReDonE_dataset import CXRTestDataset
-
 from models.vit import interpolate_pos_embed
 from models.model_retrieval import ALBEF as ALBEF_Retrieval
 from transformers import BertTokenizer
@@ -29,8 +27,41 @@ from transformers import BertTokenizer
 import tempfile
 import os
 
+import numpy as np
+from torch.utils import data
 
 import streamlit as st
+
+
+class CXRTestDataset(data.Dataset):
+    def __init__(self, target_files, transform=None):
+        super().__init__()
+        self.files = target_files
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.files)
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+        fpath = self.files[idx]
+        desired_size = 320
+        img = Image.open(fpath)
+        old_size = img.size
+        ratio = float(desired_size) / max(old_size)
+        new_size = tuple([int(x * ratio) for x in old_size])
+        img = img.resize(new_size, Image.Resampling.LANCZOS)
+        new_img = Image.new('L', (desired_size, desired_size))
+        new_img.paste(img, ((desired_size - new_size[0]) // 2,
+                            (desired_size - new_size[1]) // 2))
+        img = np.asarray(new_img, np.float64)
+        img = np.expand_dims(img, axis=0)
+        img = np.repeat(img, 3, axis=0)
+        img = torch.from_numpy(img)
+        if self.transform:
+            img = self.transform(img)
+        return img
 
 
 def load_model():
