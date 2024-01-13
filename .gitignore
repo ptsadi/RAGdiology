@@ -1,0 +1,10 @@
+/__pycache__
+/.idea
+/.venv
+/.vscode
+/data
+/img
+/my_data
+*.pth
+*.pyc
+CXR_*
