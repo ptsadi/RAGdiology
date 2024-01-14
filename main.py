@@ -32,6 +32,13 @@ from torch.utils import data
 
 import streamlit as st
 
+s3_client = boto3.resource(
+    's3',
+    aws_access_key_id=st.secrets.aws_access_key_id,
+    aws_secret_access_key=st.secrets.aws_secret_access_key
+)
+bucket = s3_client.Bucket(st.secrets.aws_bucket_name)
+
 
 class CXRTestDataset(data.Dataset):
     def __init__(self, target_files, transform=None):
@@ -115,14 +122,8 @@ def preprocess_image(model, image_path):
 
 
 def download_vector_db():
-    s3_client = boto3.resource(
-        's3',
-        aws_access_key_id=st.secrets.aws_access_key_id,
-        aws_secret_access_key=st.secrets.aws_secret_access_key
-    )
     s3_folder = "testRagd"
     local_dir = "vectorstores"
-    bucket = s3_client.Bucket(st.secrets.aws_bucket_name)
     for obj in bucket.objects.filter(Prefix=s3_folder):
         target = obj.key if local_dir is None \
             else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
@@ -137,23 +138,14 @@ def download_vector_db():
         else:
             print(f"File {target} already exists, skipping download.")
 
-    # s3_object = s3_client.get_object(Bucket=st.secrets.aws_bucket_name, Key="testRagd/chroma.sqlite3")
-    # body = s3_object["Body"]
-    #
-    # # Ensure the local directory exists
-    # local_directory = "vectorstores"
-    # if not os.path.exists(local_directory):
-    #     os.makedirs(local_directory)
-    #
-    # # Define the local file path
-    # local_file_path = os.path.join(local_directory, "testRagd")
-    #
-    # # Write the data to a local file
-    # with open(local_file_path, 'wb') as file:
-    #     file.write(body.read())
-    #
-    # # Confirm download
-    # print(f"File downloaded to {local_file_path}")
+
+def download_model_checkpoint():
+    for obj in bucket.objects.filter(Prefix='ALBEF'):
+        if not os.path.exists(obj.key):
+            print(f"Downloading {obj.key}")
+            bucket.download_file(obj.key)
+        else:
+            print(f"File {obj.key} already exists, skipping download.")
 
 
 def retreive_vector_db(image_embedding_list):
@@ -200,6 +192,7 @@ def generate_reports(context):
 
 
 def main():
+    download_model_checkpoint()
     download_vector_db()
 
     uploaded_file = st.file_uploader("", type=['jpg', 'png', 'jpeg'])
