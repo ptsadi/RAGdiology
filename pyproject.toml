@@ -21,14 +21,9 @@ openai = "^1.7.2"
 streamlit = "^1.30.0"
 langchain-openai = "^0.0.2.post1"
 boto3 = "^1.34.18"
-torch = {version = "^2.1.2+cu121", source = "pytorch"}
-torchvision = {version = "^0.16.2+cu121", source = "pytorch"}
+torch = "^2.1.2"
+torchvision = "^0.16.2"
 
-
-[[tool.poetry.source]]
-name = "pytorch"
-url = "https://download.pytorch.org/whl/cu121"
-priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]
