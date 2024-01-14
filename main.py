@@ -143,7 +143,7 @@ def download_model_checkpoint():
     for obj in bucket.objects.filter(Prefix='ALBEF'):
         if not os.path.exists(obj.key):
             print(f"Downloading {obj.key}")
-            bucket.download_file(obj.key)
+            bucket.download_file(obj.key, obj.key)
         else:
             print(f"File {obj.key} already exists, skipping download.")
 
